@@ -21,7 +21,7 @@ export const proklimPreset: SitePreset = {
   siteTitle: "PROKLIM – montaż i serwis klimatyzacji Pruszków | rekuperacja",
   siteKeywords:
     "klimatyzacja Pruszków, montaż klimatyzacji Warszawa, serwis klimatyzacji, rekuperacja Pruszków, naprawa klimatyzacji, PROKLIM Artur Krychowski",
-  ogImage: "/logo-proklim.png",
+  ogImage: "/logo-full.png",
   serviceAreas: [
     "Warszawa",
     "Pruszków",
@@ -36,44 +36,35 @@ export const proklimPreset: SitePreset = {
   googleReviewsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJ51gIKjA1GUcRtxjuF_TBSaA",
   googleWriteReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJ51gIKjA1GUcRtxjuF_TBSaA",
   gallery: [
-    { image: "/gallery/mieszkanie-mokotow.jpg", alt: "Montaż klimatyzacji split w mieszkaniu — realizacja PROKLIM" },
-    { image: "/gallery/dom-bielany.jpg", alt: "Jednostki zewnętrzne klimatyzacji na domu — realizacja PROKLIM" },
-    { image: "/gallery/biuro-centrum.jpg", alt: "Montaż klimatyzacji w lokalu — realizacja PROKLIM" },
-    { image: "/gallery/apartament-stare-miasto.jpg", alt: "Klimatyzacja w apartamencie — realizacja PROKLIM" },
-    { image: "/gallery/dom-ursynow.jpg", alt: "Instalacja klimatyzacji na domu jednorodzinnym — PROKLIM" },
-    { image: "/gallery/lokal-wola.jpg", alt: "System klimatyzacji w lokalu usługowym — PROKLIM" },
+    {
+      image: "/gallery/realizacja-dom.png",
+      alt: "Montaż jednostki zewnętrznej klimatyzacji na elewacji nowoczesnego domu — realizacja PROKLIM",
+    },
+    {
+      image: "/gallery/realizacja-dach.png",
+      alt: "Instalacja klimatyzacji GREE na ścianie szczytowej przy dachu — realizacja PROKLIM",
+    },
+    {
+      image: "/gallery/realizacja-daikin.png",
+      alt: "Podwójny montaż jednostek zewnętrznych Daikin na elewacji domu — realizacja PROKLIM",
+    },
   ],
   reviews: [
     {
-      name: "Paweł",
-      text: "Szybki montaż, wszystko czysto i profesjonalnie.",
+      name: "Dariusz Tulczyński",
+      text: "Bardzo polecam Panów serwisu od Pana Artura Krychowskiego. Szybki i bardzo sprawny przegląd klimy w mieszkaniu.",
+      source: "google",
+      rating: 5,
+      publishedAt: "2026-02-23T07:32:48+01:00",
+      relativeTime: "kilka tygodni temu",
+    },
+    {
+      text: "Klima zamontowana błyskawicznie. Ekipa pana Artura to profesjonaliści w każdym calu. Właściciel konkretny, terminowy i rzeczowy. W 100% polecam.",
       source: "google",
       rating: 5,
     },
     {
-      name: "Michał",
-      text: "Najlepsza firma klimatyzacyjna w okolicy. Polecam.",
-      source: "google",
-      rating: 5,
-    },
-    {
-      name: "Anna",
-      text: "Świetny kontakt i szybka realizacja.",
-      source: "google",
-      rating: 5,
-    },
-    {
-      text: "Szybka i sprawna realizacja. Dobre ceny i estetyczne rozwiązanie.",
-      source: "google",
-      rating: 5,
-    },
-    {
-      text: "Wszystko działa bez zarzutu.",
-      source: "google",
-      rating: 5,
-    },
-    {
-      text: "Z czystym sumieniem polecam.",
+      text: "Jesteśmy bardzo zadowoleni! Polecamy Pana Artura — profesjonalnie, fachowo, szybko, czysto i elegancko. Klimatyzacja świetnie się sprawdza. Pan Artur zna się na rzeczy!",
       source: "google",
       rating: 5,
     },

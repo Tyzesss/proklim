@@ -113,8 +113,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta,
       links: [
         { rel: "stylesheet", href: appCss },
-        { rel: "icon", href: "/logo-proklim.png", type: "image/png" },
-        { rel: "apple-touch-icon", href: "/logo-proklim.png" },
+        { rel: "icon", href: "/logo-icon.png", type: "image/png" },
+        { rel: "apple-touch-icon", href: "/logo-icon.png" },
         { rel: "canonical", href: canonicalUrl },
       ],
     };

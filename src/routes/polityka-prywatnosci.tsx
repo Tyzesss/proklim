@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 
+import { BrandMark } from "@/components/BrandMark";
 import {
   SITE_NAME,
   SITE_TITLE,
@@ -11,8 +12,6 @@ import {
   ADDRESS,
   PHONE_DISPLAY,
 } from "@/lib/site";
-
-const LOGO_SRC = "/logo-proklim.png";
 
 export const Route = createFileRoute("/polityka-prywatnosci")({
   component: PolitykaPrywatnosci,
@@ -32,14 +31,8 @@ function PolitykaPrywatnosci() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-4">
-          <Link to="/" className="flex items-center gap-2.5">
-            <img
-              src={LOGO_SRC}
-              alt={`${SITE_NAME} — ${COMPANY_LEGAL_NAME}`}
-              className="h-10 w-auto max-w-[7.5rem] object-contain"
-              width={120}
-              height={40}
-            />
+          <Link to="/" className="flex shrink-0 items-center">
+            <BrandMark />
           </Link>
           <Link
             to="/"

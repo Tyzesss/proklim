@@ -21,6 +21,8 @@ import { MobileCarousel } from "@/components/MobileCarousel";
 import { StickyCallBar } from "@/components/StickyCallBar";
 import { HowItWorks } from "@/components/HowItWorks";
 import { GoogleIcon } from "@/components/GoogleIcon";
+import { GoogleReviewsSection } from "@/components/GoogleReviewsSection";
+import { BrandMark } from "@/components/BrandMark";
 import {
   Accordion,
   AccordionContent,
@@ -43,17 +45,17 @@ import {
   MAPS_URL,
   NIP,
   GALLERY,
-  REVIEWS,
   GOOGLE_RATING,
   GOOGLE_REVIEW_COUNT,
   GOOGLE_REVIEWS_URL,
-  GOOGLE_WRITE_REVIEW_URL,
   SERVICE_AREAS,
 } from "@/lib/site";
 
-const LOGO_SRC = "/logo-proklim.png";
-
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const { getGoogleReviews } = await import("@/lib/google-reviews.server");
+    return { googleReviews: await getGoogleReviews() };
+  },
   component: Index,
   head: () => ({
     meta: [
@@ -112,8 +114,6 @@ const SERVICE_OPTION_GROUPS = [
     options: ["Potrzebuję doradztwa"],
   },
 ] as const;
-
-const reviews = REVIEWS;
 
 const gallery = GALLERY;
 
@@ -248,46 +248,6 @@ function ServiceCard({ s }: { s: (typeof services)[number] }) {
   );
 }
 
-function ReviewCard({ r }: { r: (typeof reviews)[number] }) {
-  const isGoogle = r.source === "google";
-  const starCount = r.rating ?? 5;
-
-  return (
-    <div className="flex h-full flex-col rounded-2xl border border-border bg-card p-6 text-center shadow-card transition-spring md:text-left md:hover:-translate-y-1 md:hover:shadow-cool">
-      <div className="flex items-center justify-center gap-3 md:justify-start">
-        <div
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-            isGoogle ? "bg-white shadow-sm ring-1 ring-border" : "bg-accent/10 text-accent"
-          }`}
-        >
-          {isGoogle ? (
-            <GoogleIcon className="h-5 w-5" />
-          ) : (
-            (r.name?.[0] ?? "?")
-          )}
-        </div>
-        <div className="min-w-0">
-          <p className="font-semibold text-foreground">{r.name ?? "Klient Google"}</p>
-          <div className="mt-0.5 flex items-center gap-2">
-            <div className="flex">
-              {Array.from({ length: starCount }).map((_, i) => (
-                <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
-              ))}
-            </div>
-            {isGoogle && (
-              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                <GoogleIcon className="h-3.5 w-3.5" />
-                Google
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-      <p className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground">&ldquo;{r.text}&rdquo;</p>
-    </div>
-  );
-}
-
 function GalleryCard({ g }: { g: (typeof gallery)[number] }) {
   return (
     <div className="relative h-52 overflow-hidden rounded-2xl border border-white/10 bg-brand-deep shadow-card ring-1 ring-white/5 md:h-56">
@@ -350,16 +310,10 @@ function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4">
         <a
           href="#top"
-          className="flex items-center gap-2.5"
+          className="flex shrink-0 items-center"
           onClick={() => setMenuOpen(false)}
         >
-          <img
-            src={LOGO_SRC}
-            alt={`${SITE_NAME} — ${COMPANY_LEGAL_NAME}`}
-            className="h-10 w-auto max-w-[7.5rem] object-contain"
-            width={120}
-            height={40}
-          />
+          <BrandMark />
         </a>
 
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
@@ -421,6 +375,8 @@ function SiteHeader() {
 }
 
 function Index() {
+  const { googleReviews } = Route.useLoaderData();
+
   return (
     <div className="min-h-screen bg-background max-md:text-center">
       <SiteHeader />
@@ -471,7 +427,7 @@ function Index() {
                 ))}
               </div>
               <span>
-                {GOOGLE_RATING} / 5 · {GOOGLE_REVIEW_COUNT} opinii Google
+                {googleReviews.rating.toFixed(1)} / 5 · {googleReviews.reviewCount} opinii Google
               </span>
             </a>
           </div>
@@ -508,55 +464,9 @@ function Index() {
         id="opinie"
         eyebrow="Opinie Google"
         title="Opinie klientów"
-        subtitle={`${GOOGLE_RATING} / 5 na podstawie ${GOOGLE_REVIEW_COUNT} opinii w Google Maps.`}
+        subtitle="Sprawdzone recenzje z profilu Google Maps — możesz je zweryfikować jednym kliknięciem."
       >
-        <a
-          href={GOOGLE_REVIEWS_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mx-auto mb-8 flex max-w-lg flex-col items-center gap-2 rounded-2xl border border-border bg-card px-6 py-4 shadow-card transition-spring hover:-translate-y-0.5 hover:shadow-cool sm:flex-row sm:justify-center sm:gap-4"
-        >
-          <div className="flex items-center gap-2">
-            <GoogleIcon className="h-6 w-6" />
-            <div className="flex items-center gap-1">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-5 w-5 fill-amber-400 text-amber-400" />
-              ))}
-            </div>
-          </div>
-          <p className="text-center text-sm font-semibold text-foreground sm:text-left">
-            {GOOGLE_RATING} / 5 ·{" "}
-            <span className="font-normal text-muted-foreground">{GOOGLE_REVIEW_COUNT} opinii w Google Maps</span>
-          </p>
-        </a>
-        <MobileCarousel items={reviews} renderItem={(r, i) => <ReviewCard key={i} r={r} />} />
-        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {reviews.map((r, i) => (
-            <ReviewCard key={`${r.name ?? "google"}-${i}`} r={r} />
-          ))}
-        </div>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href={GOOGLE_REVIEWS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground shadow-card transition-spring hover:-translate-y-0.5 hover:shadow-cool"
-          >
-            <GoogleIcon className="h-4 w-4" />
-            Zobacz wszystkie opinie
-          </a>
-          {GOOGLE_WRITE_REVIEW_URL ? (
-            <a
-              href={GOOGLE_WRITE_REVIEW_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-accent px-6 py-3 text-sm font-semibold text-primary-foreground shadow-cool transition-spring hover:shadow-glow"
-            >
-              <Star className="h-4 w-4" />
-              Dodaj opinię
-            </a>
-          ) : null}
-        </div>
+        <GoogleReviewsSection data={googleReviews} />
       </Section>
 
       {/* GALLERY */}
@@ -574,27 +484,6 @@ function Index() {
           ))}
         </div>
       </Section>
-
-      {SERVICE_AREAS.length > 0 && (
-        <Section
-          id="obszar"
-          eyebrow="Zasięg"
-          title="Obszar działania"
-          subtitle="Szybki dojazd i krótkie terminy realizacji w Twojej okolicy."
-          muted
-        >
-          <div className="flex flex-wrap justify-center gap-2 md:gap-3">
-            {SERVICE_AREAS.map((city) => (
-              <span
-                key={city}
-                className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-card"
-              >
-                {city}
-              </span>
-            ))}
-          </div>
-        </Section>
-      )}
 
       {/* FAQ */}
       <Section
@@ -659,7 +548,22 @@ function Index() {
         <div className="mx-auto max-w-6xl text-center text-sm text-white/70">
           <p className="font-bold text-white">{COMPANY_LEGAL_NAME}</p>
           <p className="mt-1 text-xs uppercase tracking-widest text-white/50">Montaż • Serwis • Rekuperacja</p>
-          <p className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+          {SERVICE_AREAS.length > 0 ? (
+            <div className="mt-4">
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/50">Obszar działania</p>
+              <p className="mt-2 flex flex-wrap items-center justify-center gap-2">
+                {SERVICE_AREAS.map((city) => (
+                  <span
+                    key={city}
+                    className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-white/80"
+                  >
+                    {city}
+                  </span>
+                ))}
+              </p>
+            </div>
+          ) : null}
+          <p className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
             <a href={PHONE_HREF} className="inline-flex items-center gap-1 transition-smooth hover:text-white">
               <Phone className="h-3.5 w-3.5" /> {PHONE_DISPLAY}
             </a>

@@ -55,17 +55,21 @@ export function localBusinessJsonLd() {
       bestRating: 5,
       worstRating: 1,
     },
-    review: REVIEWS.filter((r) => r.source === "google").map((r) => ({
-      "@type": "Review",
-      author: { "@type": "Person", name: r.name ?? "Klient Google" },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: r.rating ?? GOOGLE_RATING,
-        bestRating: 5,
-        worstRating: 1,
-      },
-      reviewBody: r.text,
-    })),
+    ...(REVIEWS.filter((r) => r.source === "google" && r.name).length > 0
+      ? {
+          review: REVIEWS.filter((r) => r.source === "google" && r.name).map((r) => ({
+            "@type": "Review" as const,
+            author: { "@type": "Person" as const, name: r.name! },
+            reviewRating: {
+              "@type": "Rating" as const,
+              ratingValue: r.rating ?? GOOGLE_RATING,
+              bestRating: 5,
+              worstRating: 1,
+            },
+            reviewBody: r.text,
+          })),
+        }
+      : {}),
     priceRange: "$$",
     knowsAbout: [
       "Montaż klimatyzacji",

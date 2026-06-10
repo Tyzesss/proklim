@@ -8,6 +8,8 @@ export type ReviewItem = {
   text: string;
   source?: "google";
   rating?: number;
+  publishedAt?: string;
+  relativeTime?: string;
 };
 
 export type SitePreset = {
