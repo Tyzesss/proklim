@@ -1,11 +1,13 @@
 import { krakowPreset } from "./krakow";
+import { proklimPreset } from "./proklim";
 import type { SitePreset } from "./types";
 import { warszawaPreset } from "./warszawa";
 import { wroclawPreset } from "./wroclaw";
 
-export type PresetId = "warszawa" | "krakow" | "wroclaw";
+export type PresetId = "proklim" | "warszawa" | "krakow" | "wroclaw";
 
 export const PRESETS: Record<PresetId, SitePreset> = {
+  proklim: proklimPreset,
   warszawa: warszawaPreset,
   krakow: krakowPreset,
   wroclaw: wroclawPreset,
@@ -13,7 +15,7 @@ export const PRESETS: Record<PresetId, SitePreset> = {
 
 export const PRESET_IDS = Object.keys(PRESETS) as PresetId[];
 
-const DEFAULT_PRESET_ID: PresetId = "warszawa";
+const DEFAULT_PRESET_ID: PresetId = "proklim";
 
 export function getActivePreset(): SitePreset {
   const raw = import.meta.env.VITE_CITY_PRESET as string | undefined;

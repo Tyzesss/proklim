@@ -1,7 +1,18 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { ArrowLeft, Snowflake } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
-import { SITE_NAME, SITE_TITLE, EMAIL, COMPANY_LEGAL_NAME, NIP, REGON, ADDRESS, PHONE_DISPLAY } from "@/lib/site";
+import {
+  SITE_NAME,
+  SITE_TITLE,
+  EMAIL,
+  COMPANY_LEGAL_NAME,
+  NIP,
+  REGON,
+  ADDRESS,
+  PHONE_DISPLAY,
+} from "@/lib/site";
+
+const LOGO_SRC = "/logo-proklim.png";
 
 export const Route = createFileRoute("/polityka-prywatnosci")({
   component: PolitykaPrywatnosci,
@@ -21,11 +32,14 @@ function PolitykaPrywatnosci() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-4">
-          <Link to="/" className="flex items-center gap-2 font-bold text-foreground">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-accent text-primary-foreground shadow-glow">
-              <Snowflake className="h-5 w-5" />
-            </div>
-            {SITE_NAME}
+          <Link to="/" className="flex items-center gap-2.5">
+            <img
+              src={LOGO_SRC}
+              alt={`${SITE_NAME} — ${COMPANY_LEGAL_NAME}`}
+              className="h-10 w-auto max-w-[7.5rem] object-contain"
+              width={120}
+              height={40}
+            />
           </Link>
           <Link
             to="/"
@@ -45,8 +59,10 @@ function PolitykaPrywatnosci() {
           <section>
             <h2 className="text-lg font-semibold text-foreground">1. Administrator danych</h2>
             <p className="mt-2">
-              Administratorem danych osobowych jest {COMPANY_LEGAL_NAME} (dalej: „Administrator”), prowadząca
-              działalność pod marką {SITE_NAME}, z siedzibą: {ADDRESS}, NIP: {NIP}, REGON: {REGON}. W sprawach
+              Administratorem danych osobowych jest {COMPANY_LEGAL_NAME} (dalej: „Administrator”), prowadzący
+              działalność pod marką {SITE_NAME}, z siedzibą: {ADDRESS}
+              {NIP ? `, NIP: ${NIP}` : ""}
+              {REGON ? `, REGON: ${REGON}` : ""}. W sprawach
               związanych z ochroną danych można kontaktować się pod adresem e-mail:{" "}
               <a href={`mailto:${EMAIL}`} className="text-accent underline hover:text-foreground">
                 {EMAIL}

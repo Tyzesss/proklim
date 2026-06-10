@@ -15,7 +15,7 @@ function loadEnvSiteUrl() {
   } catch {
     // brak .env — użyj domyślnej domeny
   }
-  return process.env.VITE_SITE_URL ?? "https://klimatyzacja.pl";
+  return process.env.VITE_SITE_URL ?? "https://proklim.pl";
 }
 
 const baseUrl = loadEnvSiteUrl().replace(/\/$/, "");

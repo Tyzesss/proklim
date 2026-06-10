@@ -3,9 +3,11 @@ import {
   EMAIL,
   GOOGLE_RATING,
   GOOGLE_REVIEW_COUNT,
+  GOOGLE_REVIEWS_URL,
   MAPS_URL,
   PHONE_E164,
-  SITE_CITY,
+  REVIEWS,
+  SERVICE_AREAS,
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_OG_IMAGE,
@@ -34,10 +36,9 @@ export function localBusinessJsonLd() {
       postalCode: ADDRESS_POSTAL,
       addressCountry: "PL",
     },
-    areaServed: {
-      "@type": "City",
-      name: ADDRESS_CITY,
-    },
+    areaServed: SERVICE_AREAS.length
+      ? SERVICE_AREAS.map((city) => ({ "@type": "City" as const, name: city }))
+      : { "@type": "City", name: ADDRESS_CITY },
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
@@ -46,7 +47,7 @@ export function localBusinessJsonLd() {
         closes: "18:00",
       },
     ],
-    sameAs: [MAPS_URL],
+    sameAs: [MAPS_URL, GOOGLE_REVIEWS_URL],
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: GOOGLE_RATING,
@@ -54,8 +55,24 @@ export function localBusinessJsonLd() {
       bestRating: 5,
       worstRating: 1,
     },
+    review: REVIEWS.filter((r) => r.source === "google").map((r) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: r.name ?? "Klient Google" },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: r.rating ?? GOOGLE_RATING,
+        bestRating: 5,
+        worstRating: 1,
+      },
+      reviewBody: r.text,
+    })),
     priceRange: "$$",
-    knowsAbout: ["Montaż klimatyzacji", "Serwis klimatyzacji", SITE_CITY],
+    knowsAbout: [
+      "Montaż klimatyzacji",
+      "Serwis klimatyzacji",
+      "Naprawa klimatyzacji",
+      "Rekuperacja",
+    ],
   };
 }
 

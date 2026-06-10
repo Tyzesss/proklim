@@ -11,8 +11,6 @@ import {
   Snowflake,
   Wind,
   ShieldCheck,
-  Zap,
-  Home,
   CheckCircle2,
   Menu,
   X,
@@ -22,6 +20,7 @@ import heroImage from "@/assets/hero.png";
 import { MobileCarousel } from "@/components/MobileCarousel";
 import { StickyCallBar } from "@/components/StickyCallBar";
 import { HowItWorks } from "@/components/HowItWorks";
+import { GoogleIcon } from "@/components/GoogleIcon";
 import {
   Accordion,
   AccordionContent,
@@ -33,6 +32,7 @@ import {
   SITE_TITLE,
   SITE_DESCRIPTION,
   SITE_NAME,
+  COMPANY_LEGAL_NAME,
   SITE_CITY,
   PHONE_DISPLAY,
   PHONE_HREF,
@@ -44,7 +44,14 @@ import {
   NIP,
   GALLERY,
   REVIEWS,
+  GOOGLE_RATING,
+  GOOGLE_REVIEW_COUNT,
+  GOOGLE_REVIEWS_URL,
+  GOOGLE_WRITE_REVIEW_URL,
+  SERVICE_AREAS,
 } from "@/lib/site";
+
+const LOGO_SRC = "/logo-proklim.png";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -69,27 +76,36 @@ const NAV_LINKS = [
 ] as const;
 
 const services = [
-  { icon: Snowflake, title: "Montaż klimatyzacji", desc: "Profesjonalny montaż split i multi-split w domach i mieszkaniach." },
-  { icon: Wrench, title: "Serwis i przeglądy", desc: "Coroczne przeglądy, czyszczenie i ozonowanie urządzeń." },
-  { icon: Wind, title: "Rekuperacja", desc: "Dobór i montaż systemów wentylacji mechanicznej z odzyskiem ciepła." },
-  { icon: Zap, title: "Pompy ciepła", desc: "Dobór i instalacja pomp powietrze-woda dla domów jednorodzinnych." },
-  { icon: Home, title: "Klima do biura", desc: "Systemy klimatyzacji dla lokali usługowych i biur." },
-  { icon: ShieldCheck, title: "Naprawa awaryjna", desc: "Szybka reakcja w przypadku awarii – dojazd nawet tego samego dnia." },
+  {
+    icon: Snowflake,
+    title: "Montaż klimatyzacji",
+    desc: "Profesjonalny montaż split i multi-split w domach, mieszkaniach i lokalach.",
+  },
+  {
+    icon: Wrench,
+    title: "Serwis i przeglądy",
+    desc: "Coroczne przeglądy, czyszczenie i konserwacja urządzeń klimatyzacyjnych.",
+  },
+  {
+    icon: Wind,
+    title: "Rekuperacja",
+    desc: "Dobór i montaż systemów wentylacji mechanicznej z odzyskiem ciepła.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Naprawa klimatyzacji",
+    desc: "Szybka diagnoza i naprawa awarii — skutecznie i bez zbędnych kosztów.",
+  },
 ];
 
 const SERVICE_OPTION_GROUPS = [
   {
     label: "Montaż",
-    options: [
-      "Klimatyzacja — dom lub mieszkanie",
-      "Klimatyzacja — biuro lub lokal",
-      "Rekuperacja",
-      "Pompa ciepła",
-    ],
+    options: ["Klimatyzacja — dom lub mieszkanie", "Rekuperacja"],
   },
   {
     label: "Serwis i naprawa",
-    options: ["Przegląd i konserwacja", "Naprawa awaryjna"],
+    options: ["Przegląd i konserwacja", "Naprawa klimatyzacji"],
   },
   {
     label: "Inne",
@@ -102,11 +118,26 @@ const reviews = REVIEWS;
 const gallery = GALLERY;
 
 const faqs = [
-  { q: "Ile kosztuje montaż klimatyzacji?", a: "Standardowy montaż split 2,5–3,5 kW to koszt od 1800 zł brutto. Cena zależy od długości instalacji i typu urządzenia." },
-  { q: "Jak szybko możecie zamontować klimatyzację?", a: "W sezonie zazwyczaj 3–7 dni od akceptacji wyceny. Poza sezonem nawet w 48h." },
-  { q: "Czy oferujecie darmową wycenę?", a: "Tak. Wycena na miejscu lub zdalnie (na podstawie zdjęć) jest całkowicie bezpłatna i niezobowiązująca." },
-  { q: "Jaką gwarancję dostanę?", a: "5 lat gwarancji na urządzenie (przy corocznym przeglądzie) oraz 2 lata na sam montaż." },
-  { q: "Czy serwisujecie urządzenia kupione gdzie indziej?", a: "Tak, serwisujemy wszystkie popularne marki klimatyzatorów – niezależnie od miejsca zakupu." },
+  {
+    q: "Jakie usługi oferujecie?",
+    a: "Zajmujemy się montażem, serwisem i naprawą klimatyzacji oraz montażem rekuperacji. Nie instalujemy pomp ciepła ani innych systemów poza tym zakresem.",
+  },
+  {
+    q: "Czy oferujecie darmową wycenę?",
+    a: "Tak. Wycena na miejscu lub zdalnie (na podstawie zdjęć) jest bezpłatna i niezobowiązująca — często tego samego dnia.",
+  },
+  {
+    q: "Jak szybko możecie zamontować klimatyzację?",
+    a: "Montaż realizujemy sprawnie i terminowo. Po akceptacji wyceny ustalamy konkretny termin — poza sezonem często w ciągu kilku dni.",
+  },
+  {
+    q: "Czy serwisujecie urządzenia kupione gdzie indziej?",
+    a: "Tak, serwisujemy i naprawiamy klimatyzatory wszystkich popularnych marek — niezależnie od miejsca zakupu.",
+  },
+  {
+    q: "Na jakim obszarze działacie?",
+    a: "Obsługujemy Pruszków, Warszawę i okoliczne miejscowości — m.in. Piaseczno, Wołomin, Legionowo, Otwock, Marki i Ząbki.",
+  },
 ];
 
 function CTAButton({ className = "" }: { className?: string }) {
@@ -218,18 +249,37 @@ function ServiceCard({ s }: { s: (typeof services)[number] }) {
 }
 
 function ReviewCard({ r }: { r: (typeof reviews)[number] }) {
+  const isGoogle = r.source === "google";
+  const starCount = r.rating ?? 5;
+
   return (
     <div className="flex h-full flex-col rounded-2xl border border-border bg-card p-6 text-center shadow-card transition-spring md:text-left md:hover:-translate-y-1 md:hover:shadow-cool">
       <div className="flex items-center justify-center gap-3 md:justify-start">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/10 text-sm font-bold text-accent">
-          {r.name[0]}
+        <div
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+            isGoogle ? "bg-white shadow-sm ring-1 ring-border" : "bg-accent/10 text-accent"
+          }`}
+        >
+          {isGoogle ? (
+            <GoogleIcon className="h-5 w-5" />
+          ) : (
+            (r.name?.[0] ?? "?")
+          )}
         </div>
         <div className="min-w-0">
-          <p className="font-semibold text-foreground">{r.name}</p>
-          <div className="mt-0.5 flex">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
-            ))}
+          <p className="font-semibold text-foreground">{r.name ?? "Klient Google"}</p>
+          <div className="mt-0.5 flex items-center gap-2">
+            <div className="flex">
+              {Array.from({ length: starCount }).map((_, i) => (
+                <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
+              ))}
+            </div>
+            {isGoogle && (
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                <GoogleIcon className="h-3.5 w-3.5" />
+                Google
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -300,13 +350,16 @@ function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4">
         <a
           href="#top"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2.5"
           onClick={() => setMenuOpen(false)}
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-accent text-primary-foreground shadow-glow">
-            <Snowflake className="h-5 w-5" />
-          </div>
-          <span className="font-bold tracking-tight text-foreground">{SITE_NAME}</span>
+          <img
+            src={LOGO_SRC}
+            alt={`${SITE_NAME} — ${COMPANY_LEGAL_NAME}`}
+            className="h-10 w-auto max-w-[7.5rem] object-contain"
+            width={120}
+            height={40}
+          />
         </a>
 
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
@@ -400,19 +453,27 @@ function Index() {
               {SITE_CITY}
             </h1>
             <p className="mt-3 text-base text-white/80 md:text-lg">
-              Szybki montaż, darmowa wycena i profesjonalny dobór urządzeń.
+              Montaż • Serwis • Rekuperacja — wycena tego samego dnia, estetyczne wykonanie.
             </p>
             <div className="mt-5 flex justify-center md:justify-start">
               <CTAButton />
             </div>
-            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-white/70 md:justify-start">
+            <a
+              href={GOOGLE_REVIEWS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center justify-center gap-2 text-sm text-white/70 transition-smooth hover:text-white md:justify-start"
+            >
+              <GoogleIcon className="h-4 w-4" />
               <div className="flex">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="h-4 w-4 fill-brand-cyan text-brand-cyan" />
                 ))}
               </div>
-              <span>4.9 / 5 · 48 opinii Google</span>
-            </div>
+              <span>
+                {GOOGLE_RATING} / 5 · {GOOGLE_REVIEW_COUNT} opinii Google
+              </span>
+            </a>
           </div>
 
           <div className="mt-8 rounded-2xl border border-white/10 bg-card p-5 text-card-foreground shadow-card ring-1 ring-white/10 md:mt-0 max-md:text-center md:text-left">
@@ -430,10 +491,10 @@ function Index() {
         id="uslugi"
         eyebrow="Usługi"
         title="Nasze usługi"
-        subtitle="Kompleksowa obsługa klimatyzacji od A do Z."
+        subtitle="Montaż, serwis, naprawa klimatyzacji i rekuperacja — dokładnie to, czym się zajmujemy."
       >
         <MobileCarousel items={services} renderItem={(s) => <ServiceCard s={s} />} />
-        <div className="hidden md:grid grid-cols-3 gap-5">
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-5">
           {services.map((s) => (
             <ServiceCard key={s.title} s={s} />
           ))}
@@ -445,25 +506,56 @@ function Index() {
       {/* REVIEWS */}
       <Section
         id="opinie"
-        eyebrow="Opinie"
+        eyebrow="Opinie Google"
         title="Opinie klientów"
-        subtitle="4.9 / 5 na podstawie 48 opinii w Google Maps."
+        subtitle={`${GOOGLE_RATING} / 5 na podstawie ${GOOGLE_REVIEW_COUNT} opinii w Google Maps.`}
       >
-        <div className="mx-auto mb-8 flex max-w-md flex-col items-center gap-2 rounded-2xl border border-border bg-card px-6 py-4 shadow-card sm:flex-row sm:justify-center sm:gap-4">
-          <div className="flex items-center gap-1">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className="h-5 w-5 fill-amber-400 text-amber-400" />
-            ))}
+        <a
+          href={GOOGLE_REVIEWS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mx-auto mb-8 flex max-w-lg flex-col items-center gap-2 rounded-2xl border border-border bg-card px-6 py-4 shadow-card transition-spring hover:-translate-y-0.5 hover:shadow-cool sm:flex-row sm:justify-center sm:gap-4"
+        >
+          <div className="flex items-center gap-2">
+            <GoogleIcon className="h-6 w-6" />
+            <div className="flex items-center gap-1">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className="h-5 w-5 fill-amber-400 text-amber-400" />
+              ))}
+            </div>
           </div>
           <p className="text-center text-sm font-semibold text-foreground sm:text-left">
-            4.9 / 5 · <span className="font-normal text-muted-foreground">48 opinii w Google Maps</span>
+            {GOOGLE_RATING} / 5 ·{" "}
+            <span className="font-normal text-muted-foreground">{GOOGLE_REVIEW_COUNT} opinii w Google Maps</span>
           </p>
-        </div>
-        <MobileCarousel items={reviews} renderItem={(r) => <ReviewCard r={r} />} />
-        <div className="hidden md:grid grid-cols-3 gap-5">
-          {reviews.slice(0, 3).map((r) => (
-            <ReviewCard key={r.name} r={r} />
+        </a>
+        <MobileCarousel items={reviews} renderItem={(r, i) => <ReviewCard key={i} r={r} />} />
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {reviews.map((r, i) => (
+            <ReviewCard key={`${r.name ?? "google"}-${i}`} r={r} />
           ))}
+        </div>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href={GOOGLE_REVIEWS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground shadow-card transition-spring hover:-translate-y-0.5 hover:shadow-cool"
+          >
+            <GoogleIcon className="h-4 w-4" />
+            Zobacz wszystkie opinie
+          </a>
+          {GOOGLE_WRITE_REVIEW_URL ? (
+            <a
+              href={GOOGLE_WRITE_REVIEW_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-accent px-6 py-3 text-sm font-semibold text-primary-foreground shadow-cool transition-spring hover:shadow-glow"
+            >
+              <Star className="h-4 w-4" />
+              Dodaj opinię
+            </a>
+          ) : null}
         </div>
       </Section>
 
@@ -472,7 +564,7 @@ function Index() {
         id="realizacje"
         eyebrow="Portfolio"
         title="Nasze realizacje"
-        subtitle="Wybrane montaże w Twojej okolicy."
+        subtitle="Wybrane montaże klimatyzacji i rekuperacji w regionie."
         dark
       >
         <MobileCarousel dark items={gallery} renderItem={(g) => <GalleryCard g={g} />} />
@@ -482,6 +574,27 @@ function Index() {
           ))}
         </div>
       </Section>
+
+      {SERVICE_AREAS.length > 0 && (
+        <Section
+          id="obszar"
+          eyebrow="Zasięg"
+          title="Obszar działania"
+          subtitle="Szybki dojazd i krótkie terminy realizacji w Twojej okolicy."
+          muted
+        >
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+            {SERVICE_AREAS.map((city) => (
+              <span
+                key={city}
+                className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-card"
+              >
+                {city}
+              </span>
+            ))}
+          </div>
+        </Section>
+      )}
 
       {/* FAQ */}
       <Section
@@ -513,7 +626,9 @@ function Index() {
         />
         <div className="relative mx-auto max-w-3xl text-center text-primary-foreground">
           <p className="text-xs font-semibold uppercase tracking-widest text-brand-cyan">Darmowa wycena</p>
-          <h2 className="mt-1.5 text-2xl font-bold tracking-tight md:text-4xl">Potrzebujesz klimatyzacji?</h2>
+          <h2 className="mt-1.5 text-2xl font-bold tracking-tight md:text-4xl">
+            Potrzebujesz klimatyzacji lub rekuperacji?
+          </h2>
           <div className="mx-auto mt-8 max-w-md rounded-2xl border border-white/15 bg-white/10 p-5 shadow-cool backdrop-blur-md max-md:text-center md:text-left max-md:[&_form]:text-left">
             <p className="text-sm font-semibold text-white">Wolisz oddzwonienie?</p>
             <p className="mt-1 text-xs text-white/70">Oddzwonimy do Ciebie.</p>
@@ -542,7 +657,8 @@ function Index() {
       {/* FOOTER */}
       <footer className="border-t border-white/10 bg-brand-deep px-4 pt-8 pb-24 text-primary-foreground md:pb-8">
         <div className="mx-auto max-w-6xl text-center text-sm text-white/70">
-          <p className="font-bold text-white">{SITE_NAME} - Klimatyzacja i Serwis</p>
+          <p className="font-bold text-white">{COMPANY_LEGAL_NAME}</p>
+          <p className="mt-1 text-xs uppercase tracking-widest text-white/50">Montaż • Serwis • Rekuperacja</p>
           <p className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
             <a href={PHONE_HREF} className="inline-flex items-center gap-1 transition-smooth hover:text-white">
               <Phone className="h-3.5 w-3.5" /> {PHONE_DISPLAY}
@@ -556,7 +672,7 @@ function Index() {
             <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {ADDRESS}</span>
             <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {HOURS}</span>
           </p>
-          <p className="mt-2 text-xs text-white/50">NIP: {NIP}</p>
+          {NIP ? <p className="mt-2 text-xs text-white/50">NIP: {NIP}</p> : null}
           <p className="mt-3 text-xs">
             <Link
               to="/polityka-prywatnosci"

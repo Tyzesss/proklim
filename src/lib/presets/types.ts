@@ -4,8 +4,10 @@ export type GalleryItem = {
 };
 
 export type ReviewItem = {
-  name: string;
+  name?: string;
   text: string;
+  source?: "google";
+  rating?: number;
 };
 
 export type SitePreset = {
@@ -29,6 +31,10 @@ export type SitePreset = {
   siteTitle: string;
   siteKeywords: string;
   ogImage: string;
+  serviceAreas?: string[];
+  googlePlaceId?: string;
+  googleReviewsUrl?: string;
+  googleWriteReviewUrl?: string;
   gallery: GalleryItem[];
   reviews: ReviewItem[];
 };
